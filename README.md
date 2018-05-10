@@ -4,13 +4,13 @@ An Ansible Role that deploy a war/jar application on Websphere Liberty core.
 
 ## Requirements
 
-* Download the latest version of wlp-featureRepo from http://www-01.ibm.com/support and put it on /YourWorkspace/docker_files/websphere
-* edit the version in the templates/dockerfile-Liberty-Core.j2
+* Download the latest version of wlp-featureRepo from http://www-01.ibm.com/support and put it on `/YourWorkspace/docker_files/websphere`
+* edit the version in the `templates/dockerfile-Liberty-Core.j2`
 
 ## Role Variables
 
 **WarApps** : A list of applications.
-* name : the name of the project
+* name : name of the project
 * path_to_war : the path that contain your war/jar application
 * libs : list of libraries
 
