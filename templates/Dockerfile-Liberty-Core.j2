@@ -1,0 +1,24 @@
+FROM websphere-liberty:kernel
+
+ADD docker_files/websphere  /tmp/websphere
+
+ARG WLP_VERSION=18.0.0.1
+
+RUN unzip /tmp/websphere/wlp-featureRepo-$WLP_VERSION.zip -d /tmp/websphere/wlp-featureRepo
+
+ARG REPOSITORIES_PROPERTIES="localRepositoryName1.url=/tmp/websphere/wlp-featureRepo"
+
+
+RUN if [ ! -z $REPOSITORIES_PROPERTIES ]; then mkdir /opt/ibm/wlp/etc/ \
+  && echo $REPOSITORIES_PROPERTIES > /opt/ibm/wlp/etc/repositories.properties; fi \
+  && installUtility install --acceptLicense \
+    {{ war_app.libs|join(" ") }} \
+  && if [ ! -z $REPOSITORIES_PROPERTIES ]; then rm /opt/ibm/wlp/etc/repositories.properties; fi \
+  && rm -rf /output/workarea /output/logs
+
+COPY server.xml /config/
+
+ADD {{ war_app.name }}.war /config/dropins/{{ war_app.name }}.war
+
+
+RUN server start && server stop && rm -rf /output/resources/security/ && rm -rf /output/messaging

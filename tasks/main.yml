@@ -1,0 +1,4 @@
+---
+- name: Deploy application {{ item.name }}
+  include: deploy.yml
+  with_items: "{{ WarApps }}"

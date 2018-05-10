@@ -1,0 +1,11 @@
+---
+WarApps:
+  - name: project
+    path_to_war: /tmp/project.war
+    libs:
+      - jaxrs-2.0
+      - jsonp-1.0
+      - servlet-3.1
+      - jpa-2.1
+      - apiDiscovery-1.0
+base_path_linux: /opt/livrables

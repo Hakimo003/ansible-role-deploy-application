@@ -1,0 +1,44 @@
+---
+- name: Defining needed variables
+  set_fact:
+    war_app:
+      name: "{{ item.name }}"
+      war: "{{ item.path_to_war }}"
+      libs: "{{ item.libs }}"
+
+- name: Preparing the following Spring Boot App´s Docker build files
+  debug:
+    msg: "Processing '{{ war_app.name }}' with war '{{ war_app.war }}'"
+
+- name: Creates directory
+  file:
+    path: "{{ base_path_linux }}/{{ war_app.name }}"
+    state: directory
+
+- name: Template and copy Spring Boot app´s Dockerfile to directory "{{ base_path_linux }}/{{ war_app.name }}"
+  template:
+    src: "templates/Dockerfile-Liberty-Core.j2"
+    dest: "{{ base_path_linux }}/{{ war_app.name }}/Dockerfile"
+
+- name: Template and copy Spring Boot app´s server.xml to directory "{{ base_path_linux }}/{{ war_app.name }}"
+  template:
+    src: "templates/server.xml.j2"
+    dest: "{{ base_path_linux }}/{{ war_app.name }}/server.xml"
+
+- name: Copy Spring Boot app´s jar-File to directory "{{ base_path_linux }}/{{ war_app.name }}"
+  copy:
+    src: "{{ war_app.war }}"
+    dest: "{{ base_path_linux }}/{{ war_app.name }}/{{ war_app.name }}.war"
+
+- name: Remove existing App´s Docker Container image
+  shell: "docker rmi {{ war_app.name }}:latest --force"
+  ignore_errors: yes
+
+
+- name: Build the Service´ Docker image
+  shell: "docker build . --tag {{ war_app.name }}:latest"
+  args:
+    chdir: "{{ base_path_linux }}/{{ war_app.name }}"
+
+- name: Run Container for {{ war_app.name }}
+  shell: "docker run -d -p 80:9080 -p 443:9443 {{ war_app.name }}:latest"
