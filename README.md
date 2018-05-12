@@ -1,4 +1,4 @@
-# Ansible Role: deploy-war-in-websphere-libertyy-core
+# Ansible Role: deploy war/jar application
 
 An Ansible Role that deploy a war/jar application on Websphere Liberty core.
 
